@@ -1,0 +1,28 @@
+{% extends "main.html" %}
+
+{% block title %}Unenroll Students{% endblock %}
+
+{% block content %}
+
+<div class="alert alert-info">
+  <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+  {% if undo %}
+  <b>Unexpired {{ ids|length }} student registrations.</b>
+  {% else %}
+  <b>Expired {{ ids|length }} student registrations. If this was a mistake, click the button below:</b>
+
+  <form id="program_form" method="post" action="{{ request.path }}">
+  <input type="hidden" name="selected_enrollments" value="{{ ids|join:"," }}" />
+  <input type="hidden" name="undo" value="" />
+
+  <input class="btn btn-primary" value="Undo Unenroll" type="submit">
+  </form>
+  {% endif %}
+</div>
+
+<br />
+<br />
+<p>
+<a class="btn btn-primary" href="/onsite/{{ program.getUrlBase }}/unenroll_students">Back to Unenroll Module</a>
+</p>
+{% endblock %}
