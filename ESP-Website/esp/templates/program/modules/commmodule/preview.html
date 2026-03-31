@@ -1,0 +1,129 @@
+{% extends "main.html" %}
+
+{% block title %}Communications Portal{% endblock %}
+
+{% block xtrajs %}
+{{block.super}}
+<script type="text/javascript">
+<!--
+
+//-->
+</script>
+{% endblock %}
+{% block stylesheets %}
+{{block.super}}
+<style type="text/css">
+.listtable, .listtable th, .listtable td{ border: 1px solid #999; border-collapse: collapse;}
+#divmaintext .unchosen { background-color: #CCC; }
+#divmaintext .chosen { background-color: #FFF; }
+#divmaintext td.notchooser { cursor: pointer }
+#finalsentence { border: 1px solid black; width: 550px; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<h1>Communications Portal</h1>
+<br />
+<h2>Preview</h2>
+
+<br />
+
+<p>
+Here is a preview of what the email you sent will look like for the first user in the list of
+users to whom you are sending this email.
+<br />
+</p>
+<br />
+
+<p>
+<strong>From:</strong> {{ from }}
+<br />
+</p>
+
+<p>
+<strong>Reply-To:</strong> {{ replyto }}
+<br />
+</p>
+
+<p>
+<strong>Subject:</strong> {{ subject }}
+<br />
+</p>
+
+<p>
+<strong>Public:</strong> {% if public_view %}Yes{% else %}No{% endif %}
+<br />
+</p>
+
+{% if other_program_urls %}
+<div class="alert alert-warning" role="alert">
+  <strong>This email contains links that may reference another program.</strong>
+  The following program URL(s) in the subject or body do not match the current program ({{ program.getUrlBase }}):
+  <ul class="mb-0">
+  {% for prog_url in other_program_urls %}
+    <li>{{ prog_url }}</li>
+  {% endfor %}
+  </ul>
+  {% if confirm_send_required %}
+  Please update the links to the current program, or click "Send anyway" below if the links are intentional.
+  {% else %}
+  Consider updating the links so recipients see the current program.
+  {% endif %}
+</div>
+{% endif %}
+
+<br />
+<p>
+<strong>Email body:</strong>
+<br />
+<iframe srcdoc="{{ rendered_text|join:""|escape }}" style="width: 100%; max-height: 800px;"></iframe>
+<br />
+</p>
+
+<br />
+<br />
+<form action="/manage/{{program.getUrlBase}}/maincomm2" method="post" name="mainback">
+<input type="hidden" name="filterid" value="{{filterid}}" />
+<input type="hidden" name="sendto_fn_name" value="{{sendto_fn_name}}" />
+<input type="hidden" name="from" value="{{from}}" />
+<input type="hidden" name="replyto" value="{{replyto}}" />
+<input type="hidden" name="subject" value="{{subject}}" />
+<input type="hidden" name="body" value="{{body}}" />
+<input type="hidden" name="template" value="{{template}}" />
+{% if public_view %}
+<input type="hidden" name="public_view" value="on" />
+{% endif %}
+<input type="hidden" name="listcount" value="{{listcount}}" />
+<input type="hidden" name="selected" value="{{selected}}" />
+<input type="submit" value="Edit Your Email" id="submitform" class="btn btn-default" />
+</form>
+<form action="/manage/{{program.getUrlBase}}/commfinal" method="post" name="mainback">
+<input type="hidden" name="filterid" value="{{filterid}}" />
+<input type="hidden" name="sendto_fn_name" value="{{sendto_fn_name}}" />
+<input type="hidden" name="from" value="{{from}}" />
+<input type="hidden" name="replyto" value="{{replyto}}" />
+<input type="hidden" name="subject" value="{{subject}}" />
+<input type="hidden" name="body" value="{{body}}" />
+<input type="hidden" name="template" value="{{template}}" />
+{% if public_view %}
+<input type="hidden" name="public_view" value="on" />
+{% endif %}
+{% if confirm_send_required %}
+<input type="hidden" name="confirm_send_with_other_program_links" value="1" />
+{% endif %}
+<input type="submit" value="{% if confirm_send_required %}Send anyway{% else %}Send Message!{% endif %}" id="submitform" class="btn btn-primary" />
+</form>
+
+<script>
+$j(function() {
+    $j("iframe").each(function(index, element) {
+        element.onload = function() {
+            element.style.height = element.contentWindow.document.body.scrollHeight + 16 + 'px';
+        }
+    });
+});
+</script>
+
+{% endblock %}
