@@ -243,15 +243,17 @@ class ClassManager(Manager):
             counter += 1
 
         # All class ID's; used by later query ugliness:
+
         class_ids = [x.id for x in classes]
 
         # Now to get the sections corresponding to these classes...
         sections =[s for s in ClassSection.objects.filter(parent_class__in=class_ids)
                    if not s.isCancelled()
 
-         #Exclude cancelled section to prevent invalid lottery assignments          
+         #Exclude the cancelled section to prevent invalid lottery assignments          
         ]
         sections_by_parent_id = defaultdict(list)
+        
         for s in sections:
             sections_by_parent_id[s.parent_class_id].append(s)
 
