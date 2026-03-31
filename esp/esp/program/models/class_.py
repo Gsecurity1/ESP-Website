@@ -247,10 +247,12 @@ class ClassManager(Manager):
         class_ids = [x.id for x in classes]
 
         # Now to get the sections corresponding to these classes...
+        #Exclude the cancelled section to prevent invalid lottery assignments 
+        
         sections =[s for s in ClassSection.objects.filter(parent_class__in=class_ids)
                    if not s.isCancelled()
 
-         #Exclude the cancelled section to prevent invalid lottery assignments          
+                 
         ]
         sections_by_parent_id = defaultdict(list)
         
